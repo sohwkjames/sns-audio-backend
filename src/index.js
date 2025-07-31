@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 
 const authRoutes = require('./routes/auth');
 
@@ -17,6 +18,8 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
+  bcrypt.hash('Password123', 10).then(console.log);
+
   res.send({ status: 'OK' });
 });
 
@@ -31,6 +34,8 @@ app.use('/api/auth', authRoutes);
 //     res.status(500).send('DB error');
 //   }
 // });
+
+
 
 app.listen(port, () => {
   console.log(`Backend running on port ${port}`);
