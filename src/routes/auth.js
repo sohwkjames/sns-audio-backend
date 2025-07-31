@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id, username',
+      'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id, username, is_admin',
       [username, hash]
     );
     res.status(201).json(result.rows[0]);
@@ -27,8 +27,6 @@ router.post('/signup', async (req, res) => {
 // User login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
-
   try {
     const result = await pool.query(
       'SELECT * FROM users WHERE username = $1',
@@ -47,7 +45,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
+      { userId: user.id, username: user.username, isAdmin: user.is_admin },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
