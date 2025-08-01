@@ -8,17 +8,16 @@ const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 const pool = require('./db');
 const app = express();
-const port = process.env.PORT || 5000;
-
-const router = express.Router();
-router.use(authenticateToken, requireAdmin);
-
 app.use(cors({
-  origin: '*', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.options('*', cors()); // Allow preflight for all routes
 app.use(express.json());
+
+const port = process.env.PORT || 5000;
 
 app.get('/api/health', (req, res) => {
   bcrypt.hash('Password123', 10).then(console.log);

@@ -40,7 +40,10 @@ router.post('/users', async (req, res) => {
 
 router.put('/users/:id', async (req, res) => {
   const { username, password, is_admin } = req.body;
-
+  // Cannot update the admin superuser
+  if (username === 'admin') {
+    return res.status(404).json({ error: 'Cannot modify superuser admin' });
+  }
   try {
     const updates = [];
     const values = [];
@@ -85,6 +88,10 @@ router.put('/users/:id', async (req, res) => {
 });
 
 router.delete('/users/:id', async (req, res) => {
+  if (username === 'admin') {
+    return res.status(404).json({ error: 'Cannot modify superuser admin' });
+  }
+
   try {
     const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [req.params.id]);
 
