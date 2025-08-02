@@ -14,3 +14,14 @@ VALUES (
   TRUE
 )
 ON CONFLICT (username) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS audios (
+  audio_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  file_path TEXT NOT NULL,
+  duration_seconds INTEGER,
+  uploaded_at TIMESTAMP DEFAULT NOW()
+);

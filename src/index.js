@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { authenticateToken, requireAdmin} = require('./middleware/auth')
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const audioRoutes = require('./routes/audio');
 
 require('dotenv').config();
 const pool = require('./db');
@@ -26,17 +27,8 @@ app.get('/api/health', (req, res) => {
 });
 app.use('/api/admin', authenticateToken, requireAdmin, adminRoutes);
 app.use('/api/auth', authRoutes);
-
-// app.get('/api/audios', async (req, res) => {
-//   try {
-//     const result = await pool.query('SELECT * FROM audios');
-//     res.json(result.rows);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('DB error');
-//   }
-// });
-
+app.use('/api/audios', audioRoutes);
+app.use('/uploads', express.static('uploads')); // allow client to access the audio file
 
 
 app.listen(port, () => {

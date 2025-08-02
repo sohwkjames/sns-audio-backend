@@ -6,4 +6,3 @@
 
 - There is a default admin log in. Username: admin, Password: Password123
 
-- 

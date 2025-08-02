@@ -1,0 +1,235 @@
+
+API Documentation
+
+This document describes the API endpoints available in the Audio Hosting App backend. The API is secured via JWT authentication unless otherwise stated.
+
+---
+
+## Authentication
+
+### `POST /api/auth/login`
+
+Log in a user and return a JWT.
+
+- **Auth Required**: No
+- **Request Body**:
+
+```json
+{
+  "username": "user1",
+  "password": "password123"
+}
+```
+
+- **Response (200)**:
+
+```json
+{
+  "token": "your.jwt.token"
+}
+```
+
+- **Errors**: `401 Unauthorized`
+
+---
+
+## 👤 Admin API (Manage Users)
+
+> ⚠️ These endpoints are restricted to users with `is_admin = true`.
+
+### `GET /api/admin/users`
+
+List all user accounts.
+
+- **Auth Required**: Yes, Admin
+- **Response**:
+
+```json
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "is_admin": true
+  },
+  ...
+]
+```
+
+---
+
+### `POST /api/admin/users`
+
+Create a new user.
+
+- **Auth Required**: Yes, Admin
+- **Request Body**:
+
+```json
+{
+  "username": "newuser",
+  "password": "password123",
+  "is_admin": false
+}
+```
+
+- **Response**:
+
+```json
+{
+  "message": "User created"
+}
+```
+
+---
+
+### `PUT /api/admin/users/:id`
+
+Update a user's credentials or admin status.
+
+- **Auth Required**: Yes, Admin
+- **Path Param**: `id` — user ID
+- **Request Body**:
+
+```json
+{
+  "username": "updateduser",
+  "password": "newpassword123",
+  "is_admin": true
+}
+```
+
+- **Response**:
+
+```json
+{
+  "message": "User updated"
+}
+```
+
+---
+
+### `DELETE /api/admin/users/:id`
+
+Delete a user.
+
+- **Auth Required**: Yes, Admin
+- **Path Param**: `id` — user ID
+- **Response**:
+
+```json
+{
+  "message": "User deleted"
+}
+```
+
+---
+
+## 🎵 Audio API
+
+### `GET /api/audios`
+
+Return a list of the logged-in user's uploaded audio files.
+
+- **Auth Required**: Yes
+- **Response**:
+
+```json
+[
+  {
+    "audio_id": 3,
+    "title": "My Audio",
+    "category": "Ambient",
+    "description": "Relaxing sounds of ocean waves",
+    "file_path": "uploads/1691181738-ocean.mp3",
+    "uploaded_at": "2025-08-01T14:23:00Z"
+  },
+  ...
+]
+```
+
+---
+
+### `POST /api/audios`
+
+Upload an audio file with metadata.
+
+- **Auth Required**: Yes
+- **Content-Type**: `multipart/form-data`
+- **Form Fields**:
+  - `title` (required)
+  - `category` ("Podcast", "Music", "Ambient")
+  - `description` (optional)
+  - `audio` (required file input)
+
+- **Response**:
+
+```json
+{
+  "audio_id": 4,
+  "message": "Audio uploaded successfully"
+}
+```
+
+- **Errors**: `400 Bad Request`, `500 Internal Server Error`
+
+---
+
+### `GET /api/audios/:id/play`
+
+Returns a playback URL for an uploaded audio file.
+
+- **Auth Required**: Yes
+- **Response**:
+
+```json
+{
+  "url": "http://localhost:5000/uploads/1691181738-ocean.mp3"
+}
+```
+
+---
+
+## ⚙️ Health Check
+
+### `GET /api/health`
+
+Used to check if the backend is running.
+
+- **Auth Required**: No
+- **Response**:
+
+```json
+{
+  "status": "OK"
+}
+```
+
+---
+
+## 🛡️ Authorization
+
+All secured endpoints require a JWT passed in the `Authorization` header:
+
+```
+Authorization: Bearer <your-token>
+```
+
+---
+
+## 📁 Serving Uploaded Files
+
+Uploaded audio files are accessible at:
+
+```
+http://localhost:5000/uploads/<filename>
+```
+
+Files are stored inside the container under `/app/uploads`, backed by a Docker volume.
+
+---
+
+## 🚀 Deployment Notes
+
+- All endpoints are hosted under `${REACT_APP_API_URL}/api/`
+- For production, replace local file storage with Amazon S3 or compatible storage
+- The frontend expects `REACT_APP_API_URL` to be set in `.env`
