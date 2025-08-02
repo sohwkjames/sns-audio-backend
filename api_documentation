@@ -189,7 +189,7 @@ Returns a playback URL for an uploaded audio file.
 
 ---
 
-## ⚙️ Health Check
+## Health Check
 
 ### `GET /api/health`
 
@@ -206,7 +206,7 @@ Used to check if the backend is running.
 
 ---
 
-## 🛡️ Authorization
+## Authorization
 
 All secured endpoints require a JWT passed in the `Authorization` header:
 
@@ -216,7 +216,7 @@ Authorization: Bearer <your-token>
 
 ---
 
-## 📁 Serving Uploaded Files
+## Serving Uploaded Files
 
 Uploaded audio files are accessible at:
 
@@ -225,11 +225,3 @@ http://localhost:5000/uploads/<filename>
 ```
 
 Files are stored inside the container under `/app/uploads`, backed by a Docker volume.
-
----
-
-## 🚀 Deployment Notes
-
-- All endpoints are hosted under `${REACT_APP_API_URL}/api/`
-- For production, replace local file storage with Amazon S3 or compatible storage
-- The frontend expects `REACT_APP_API_URL` to be set in `.env`
